@@ -1,0 +1,1 @@
+The following module requires 5 files to run commonheader.hllheader.hlinked_list.creverse_linked_list.cmain.cStep to compile and execute (all the files should be in the same directory) :-LINUX :-gcc -Wall main.c linked_list.c reverse_linked_list.c -o linked.exeWindows :-cl /W4 main.c linked_list.c reverse_linked_list.c /link /out:linked.exe
