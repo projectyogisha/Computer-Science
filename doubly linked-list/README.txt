@@ -1,0 +1,1 @@
+The following module requires 4 files to run commonheader.hdllheader.hdoubly_linked_list.cmain.cStep to compile and execute (all the files should be in the same directory) :-LINUX :-gcc -Wall main.c doubly_linked_list.c -o linked.exeWindows :-cl /W4 main.c doubly_linked_list.c /link /out:linked.exe
