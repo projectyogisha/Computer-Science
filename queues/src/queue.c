@@ -109,7 +109,7 @@ return SUCCESS;
 
 
 
-while (front <= rear)
+while (front != rear)
 {
 
  printf ("%p\t", q->data[front]); 
@@ -118,6 +118,7 @@ while (front <= rear)
 
 }
 
+ printf ("%p\t", q->data[front]); 
 printf ("\n");
 return SUCCESS;
 }
