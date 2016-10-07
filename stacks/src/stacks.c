@@ -17,9 +17,9 @@ return FAILURE;
 
 if (NULL == (*s)->data)
 {
-return FAILURE;
+free (*s);
+  return FAILURE;
 }
-memset ((*s)->data, '\0', size);
 
 return SUCCESS;
 }
