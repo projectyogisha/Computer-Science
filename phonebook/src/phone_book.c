@@ -384,7 +384,7 @@ if (NULL == entry)
 {
 return NULL;
 }
-entry->name = (char*) malloc (sizeof(char)* strlen(name));
+entry->name = (char*) malloc (sizeof(char)* strlen(name)); /*we allocated the memory required to store the passed name, this avoid having like name[30]and wasting spaces unessscarily*/
 if (NULL == entry->name)
 {
 free (entry);
