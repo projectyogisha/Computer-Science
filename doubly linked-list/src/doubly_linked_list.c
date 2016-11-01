@@ -22,7 +22,7 @@
     }
 
   static node* create_linked_list_node (void *val)
-{
+  {
     node *newNode = NULL;
     newNode = (node*) malloc(sizeof(node));
 
@@ -37,21 +37,21 @@
     newNode -> data = val;
 
     return newNode;
-}
+  }
 
 
-static int delete_linked_list_node (node *temp)
-{
+    static int delete_linked_list_node (node *temp)
+    {
 
     if ( NULL == temp )
-    {
+     {
         printf("Node to be free points to null\n");
         return FAILURE;
-    }
+     }
 
     free(temp);
     return SUCCESS;
-}
+  }
 
 
 
@@ -62,9 +62,27 @@ static int delete_linked_list_node (node *temp)
     return ((node *) ((unsigned int) a ^ (unsigned int) b));
     }
 
+/*static int check_memory_flags(node *node)
+{
+void *p = NULL;  
+   
+    __asm__("pushf\n"  
+                   "orl $0x40000, (%rsp)\n" 
+                 "popf"); 
+ 
+              p = malloc(sizeof(void*) + 1);  
+              memset(p, 0, sizeof(void*) + 1);  
+if (NULL == (p - node->data))
+{
+return FAILURE;
+  }
 
 
 
+
+              return SUCCESS;  
+}
+*/
 
     int insert_dlinked_list_end (node **head, node **tail, void *val)
     {
@@ -94,6 +112,8 @@ static int delete_linked_list_node (node *temp)
             *tail = newNode;
 
         }
+
+         //  check_memory_flags(*tail);
            return SUCCESS;
 
 
@@ -117,41 +137,37 @@ static int delete_linked_list_node (node *temp)
         return FAILURE;
         }
 
-    if (isempty(*head) && isempty(*tail)){
-
-    newNode -> next = xor(NULL, *head);
-
+    if (isempty(*head) && isempty(*tail))
+    {
+             newNode -> next = xor(NULL, *head);
             *head = newNode;
-             *tail = newNode;
+            *tail = newNode;
     }
             else if (1 == position)
             {
-
             newNode -> next = xor(NULL, *head);
             (*head) -> next = xor ( (*head) -> next , newNode);
-
             *head = newNode;
-
-                    }
+            }
             else
             {
                 while ( ( NULL != current_temp ) && ( 1 != position ) )
                 {
-    temp = prev_temp;
+                    temp = prev_temp;
                     prev_temp = current_temp;
-
-            current_temp = xor ( current_temp -> next , temp);
+                    current_temp = xor ( current_temp -> next , temp);
                     position--;
                 }
 
-
                prev_temp -> next = xor (xor (prev_temp -> next, current_temp ), newNode);
                newNode -> next = xor (current_temp, prev_temp);
-               if (NULL != current_temp) {
-             current_temp -> next = xor (xor (current_temp -> next, prev_temp ), newNode);
-               } else
+               if (NULL != current_temp) 
                {
-                   *tail = newNode;
+                    current_temp -> next = xor (xor (current_temp -> next, prev_temp ), newNode);
+               }
+               else
+               {
+                    *tail = newNode;
                }
 
             }
@@ -183,7 +199,7 @@ static int delete_linked_list_node (node *temp)
         *tail = NULL;
     }
 
-val = (*head) -> data;
+        val = (*head) -> data;
 
         if ( !delete_linked_list_node (*head))
         {
@@ -227,11 +243,6 @@ val = (*head) -> data;
     *tail = NULL;
     return SUCCESS;
     }
-
-
-
-
-
 
 
 

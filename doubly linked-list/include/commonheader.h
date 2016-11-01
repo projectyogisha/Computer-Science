@@ -26,6 +26,14 @@ typedef struct node
     } node;
 
 
+typedef struct binary_tree_node
+{
+
+void *data;
+struct binary_tree_node *left;
+struct binary_tree_node *right;
+
+} binary_tree_node;
     /******************************
     FUNCTION PROTOTYPES
     ****************************/
@@ -34,3 +42,4 @@ typedef struct node
     int free_string ( void *val);
     int print_integer_array (int *arr, int array_length);
 #endif // COMMONHEADER_H_INCLUDED
+
