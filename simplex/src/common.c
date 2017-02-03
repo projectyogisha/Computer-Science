@@ -46,34 +46,31 @@ return index_l;
 }
 
 
-
-
-void  resize_matrix  (float **matrix, unsigned row, unsigned col )
+float** resize_matrix  (float **matrix, unsigned row, unsigned col )
 {
 
 unsigned index = 0;
+  (matrix) = (float**) realloc ( (matrix) , row * sizeof (float*));
 
-  matrix = (float**) realloc ( matrix , row * sizeof (float));
- if (NULL == matrix)
+
+ if (NULL == (matrix))
    {
       printf ("no memory\n");
       exit(1);
     }
-  
+
 for (;index < row;index++)
 {
-  matrix[index] = (float*) realloc (matrix[index], col * sizeof (float));
- if (NULL == matrix[index])
+  (matrix)[index] = (float*) realloc( (matrix)[index], col * sizeof (float));
+ if (NULL == (matrix)[index])
    {
       printf ("no memory\n");
       exit(1);
     }
  
 }
-
-return;
+return matrix ;
 }
-
 
 
 
@@ -108,7 +105,6 @@ return matrix;
 float* zero_array (unsigned row)
 {
 float *matrix =NULL;
-unsigned index = 0;
   
   matrix = (float*) calloc (row , sizeof (float));
   if (NULL == matrix)
@@ -116,11 +112,6 @@ unsigned index = 0;
       printf ("no memory\n");
       exit(1);
     }
-  
- for (;index < row;index ++)
-{
-  matrix[index] = 0;
-}
 return matrix;
 }
 
@@ -133,6 +124,7 @@ float** generate_matrix (unsigned row, unsigned col, float* (*function_array) (u
 float **matrix = NULL;
 unsigned row_l = 0;
 
+
 matrix = (float **) malloc (row * sizeof(float *));
 if (NULL == matrix)
 {
@@ -140,11 +132,10 @@ if (NULL == matrix)
   exit(1);
 }
 
-  for (;row_l < row; row_l++)
+  for (row_l=0;row_l < row; row_l++)
   {
     matrix[row_l] = function_array(col);
   }
-
 
 
 return matrix;
@@ -189,6 +180,23 @@ void display_array (float *matrix, int row)
 
     printf("\n");
 }
+
+
+
+void free_matrix (float **matrix,const unsigned row)
+{
+unsigned index = 0;
+for (;index<row;index++)
+{
+  free(matrix[index]);
+}
+free(matrix);
+}
+
+
+
+
+
 
 
 

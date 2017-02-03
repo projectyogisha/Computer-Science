@@ -2,9 +2,10 @@
 
 
 /**************************************************************************************************************************
-* Function Name -
-* Description - 
-* Return - 
+* Function Name - N_to_B
+* Description - It is used to exchange values of e,l of arrays N,B between each
+* other.
+* Return - void
 * Date - Nov 20 2016
 * ************************************************************************************************************************/
 
@@ -18,9 +19,9 @@ static void N_to_B (unsigned *N,unsigned *B,unsigned e, unsigned l )
 
 
 /**************************************************************************************************************************
-* Function Name -
-* Description - 
-* Return - 
+* Function Name - max_positive 
+* Description - returns the index of the array with max positive value
+* Return - unsigned
 * Date - Nov 20 2016
 * ************************************************************************************************************************/
 
@@ -37,9 +38,10 @@ return length;
 }
 
 /**************************************************************************************************************************
-* Function Name -
-* Description - 
-* Return - 
+* Function Name - bland_rule
+* Description - uses bland_rule for selecting entering variable (used to avoid
+* degeneracy
+* Return - unsigned
 * Date - Nov 21 2016
 * ************************************************************************************************************************/
 
@@ -68,9 +70,9 @@ return index_sub;
 
 
 /**************************************************************************************************************************
-* Function Name -
+* Function Name - astenn_positive_sampling
 * Description - 
-* Return - 
+* Return - unsigned
 * Date - Nov 21 2016
 * ************************************************************************************************************************/
 
@@ -95,7 +97,9 @@ return index_min;
 
 /**************************************************************************************************************************
 * Function Name - calculate_pivot
-* Description - returns the modified version of the linear function
+* Description - modifies the linear program such that entering variable
+* (e_index) becomes part of the Basic set and leaving variable (l_index)
+* becomes part of Non Basic set.
 * Return - void
 * Date - Nov 18 2016
 * ************************************************************************************************************************/
@@ -175,14 +179,10 @@ N_to_B(N,B,e_index,l_index);
 /**************************************************************************************************************************
 * Function Name - simplex
 * Description - this is the main loop for the modified simplex algorithm
-* Return - vois
+* Return - void
 * Date - Dec 13 2016
 * ************************************************************************************************************************/
-
-
-
-
-         void simplex (float **matrix,  /*this is the entry matrix */
+         void simplex (float ***matrix_t,  /*this is the entry matrix */
                        float *c,  /*this is the array objective function coefficients*/
                        float *v, /*constant iterative value*/
                        float *b,  /*this is the array of elements on set b*/
@@ -212,14 +212,20 @@ if (NULL == N)
   exit (1);
 }
 
-initialize_feasible_solution
-(matrix,matrix_l,c,b,v,B,size_b,N,size_c,e,l,select_e);
-
+initialize_feasible_solution (matrix_t,&matrix_l,c,b,v,B,size_b,N,size_c,e,l,select_e);
 if (INFINITY == *v)
 {
-  return;
+
+free (N);
+free (B);
+free_matrix(matrix_l,size_b);
+return;
 }
 
+float **matrix = (*matrix_t);
+
+/*copy the addres of matrix_t into a temporary pointer to save time
+ * dereferencing */
 
 while ((e = select_e(c,size_c,N)) < size_c)
 {
@@ -237,10 +243,15 @@ while ((e = select_e(c,size_c,N)) < size_c)
 
 if (delta == INFINITY)
 {
-  printf ("UNBOUND\n");
   *v = INFINITY;
-  return;
 
+free (N);
+free (B);
+free_matrix(matrix_l,size_b);
+(*matrix_t) = matrix;
+
+  printf ("UNBOUND\n");
+  return;
 }  
 else
 {
@@ -254,7 +265,6 @@ matrix_l = matrix_temp;
 
 }
 
-
 printf ("\a\nOptimal value:%f\n",*v);
 for (index = 0;index < size_c;index++)
 {
@@ -267,23 +277,20 @@ for (index = 0;index < size_b;index++)
 }
 free (N);
 free (B);
-
-for (index = 0;index < size_b;index++)
-{
-  free (matrix_l[index]);
-}
-
+free_matrix(matrix_l,size_b);
+(*matrix_t) = matrix;
 
 }
 
 /**************************************************************************************************************************
 * Function Name - initialize_feasible_solution
-* Description - to check if there is a feasible solution to the linear system
+* Description - to check if there is a feasible solution to the linear system,
+* if feasible it returns the modified linear program to work with
 * Return - void, sets a initialized linear system which has a feasible solution
 * Date - Dec 13 2016
 * ************************************************************************************************************************/
-void initialize_feasible_solution (float **matrix,  /*this is the entry matrix */
-                                   float **matrix_l, /*this is the leaving matrix */     
+void initialize_feasible_solution (float ***matrix_b,  /*this is the entry matrix */
+                                   float ***matrix_l_b, /*this is the leaving matrix */     
                                    float *c,  /*this is the array objective function coefficients*/
                                    float *b,  /*this is the array of elements on set b*/
                                    float *v,  /*constant in the objective function */
@@ -329,11 +336,16 @@ if (b[b_min] > 0)
 }
 else 
 {
+
 /*resizing matrix to add x0 variable */
-resize_matrix(matrix, size_B, size_N + 1);
-resize_matrix(matrix_l, size_B, size_N + 1);
+(*matrix_b) = resize_matrix((*matrix_b), size_B, size_N + 1);
+(*matrix_l_b) =resize_matrix((*matrix_l_b), size_B, size_N + 1);
 float *c_temp = zero_array (size_N+1);
 c_temp[size_N] = -1;  
+float **matrix = (*matrix_b);
+float **matrix_l= (*matrix_l_b);
+
+
 /*setting the coefficient of x0 to -1 */
 for (index =0;index < size_B ;index++)
 {
@@ -364,14 +376,13 @@ calculate_pivot (matrix,matrix_l,c_temp,b,&v_temp,B,size_B,N,size_N+1,e,l);
 matrix_temp=matrix;
 matrix=matrix_l;
 matrix_l = matrix_temp;
-
+  
 }
 
 
 
-
 /*check if the optimal value is 0 */
-if (0 ==v_temp)
+if (0 == v_temp || (v_temp < 0.000005 && v_temp > -0.000005 ) )
 {
 /*if x0 is part of the basic varible set exchange with a nonbasic
  * variable with a positive c coefficient */
@@ -421,18 +432,17 @@ if (N[index] <= size_N)
 c[index] = c_temp[index];
 }
 *v= *v + v_temp;
-
-free(c_temp);
-
 }
 else 
 {
 printf ("\ainfisable\n");
 *v = INFINITY;
 }
-
+free(c_temp);
+*matrix_b = matrix;
+*matrix_l_b= matrix_l;
 }
-         
+
 }
 
 

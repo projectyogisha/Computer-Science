@@ -45,7 +45,8 @@ float** generate_matrix (unsigned row, unsigned col, float* (*function_array)(un
 float* generate_array (unsigned row,  float* (*function_array) (unsigned row));
 void display_matrix (float **matrix, int row,int col);
 void display_array (float *matrix, int row);
-void  resize_matrix  (float **matrix, unsigned row, unsigned col );
+float**  resize_matrix  (float **matrix, unsigned row, unsigned col );
+void free_matrix (float **matrix,const unsigned row);
 unsigned search_array (const unsigned *array, unsigned length, unsigned value);
 /*simplex.c */
 unsigned max_positive (const float *c, const unsigned length ,const unsigned *N );
@@ -63,7 +64,7 @@ void  calculate_pivot (float **matrix,  /*this is the entry matrix */
                       unsigned e_index,   /*entering variable */
                       unsigned l_index  /*leaving variable */  );
 
-         void simplex (float **matrix,  /*this is the entry matrix */
+         void simplex (float ***matrix_t,  /*this is the entry matrix */
                        float *c,  /*this is the array objective function coefficients*/
                        float *v, /*cons*/
                        float *b,  /*this is the array of elements on set b*/
@@ -72,8 +73,8 @@ void  calculate_pivot (float **matrix,  /*this is the entry matrix */
                        unsigned (*select_e) (const float *c,const unsigned
                        length,const unsigned *N));
 
-void initialize_feasible_solution (float **matrix,  /*this is the entry matrix */
-                                   float **matrix_l, /*this is the leaving matrix */     
+void initialize_feasible_solution (float ***matrix_b,  /*this is the entry matrix */
+                                   float ***matrix_l_b, /*this is the leaving matrix */     
                                    float *c,  /*this is the array objective function coefficients*/
                                    float *b,  /*this is the array of elements on set b*/
                                    float *v,  /*constant in the objective function */

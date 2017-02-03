@@ -50,4 +50,4 @@ usage:
 
 
 valgrind:
-	valgrind --tool=memcheck --leak-check=yes $(BIN)/$O 
+	valgrind --track-origins=no --tool=memcheck --leak-check=yes   $(BIN)/$O 
