@@ -1,0 +1,2 @@
+cc -c -g -static  -Wall -I../include/  ../src/tree_split.c -o ../obj/tree_split.o 
+Makefile:42: recipe for target '../obj/tree_split.o' failed
